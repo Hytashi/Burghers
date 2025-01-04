@@ -11,7 +11,7 @@ import eu.decentsoftware.holograms.api.holograms.Hologram;
 import fr.hytashi.burghers.Main;
 import fr.hytashi.burghers.implementation.SerializableLocation;
 import fr.hytashi.burghers.implementation.SerializableProperty;
-import fr.hytashi.burghers.utils.RandomName;
+import fr.hytashi.burghers.utils.UniqueRandomName;
 import net.minecraft.server.v1_12_R1.PacketPlayOutScoreboardTeam;
 import net.minecraft.server.v1_12_R1.PlayerConnection;
 import net.minecraft.server.v1_12_R1.ScoreboardTeam;
@@ -41,7 +41,7 @@ public class NPC implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String displayName;
-    private final String identifier = (new RandomName(12)).nextString();
+    private final String identifier = (new UniqueRandomName(12)).nextString();
     private SerializableLocation location;
     private SerializableProperty property;
     private final int entityID = 10000 + NPCManager.getNPCS().size();
