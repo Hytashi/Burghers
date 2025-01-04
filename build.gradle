@@ -1,0 +1,37 @@
+plugins {
+    id 'java'
+}
+
+group = "fr.hytashi"
+description = "Burghers"
+version = "1.0.0"
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "papermc-repo"
+        url = "https://repo.papermc.io/repository/maven-public/"
+    }
+    maven {
+        name = "decentholograms-repo"
+        url 'https://jitpack.io'
+    }
+    maven { url "https://repo.dmulloy2.net/repository/public/" }
+    maven {
+        url "https://maven.elmakers.com/repository/"
+    }
+    maven { url = uri("https://repo.codemc.io/repository/maven-releases/") }
+}
+
+dependencies {
+    compileOnly "com.github.retrooper:packetevents-spigot:2.7.0"
+    compileOnly "com.destroystokyo.paper:paper-api:1.12.2-R0.1-SNAPSHOT"
+    compileOnly 'com.comphenix.protocol:ProtocolLib:5.1.0'
+    compileOnly "com.github.decentsoftware-eu:decentholograms:2.8.12"
+    compileOnly 'org.spigotmc:spigot:1.12.2-R0.1-SNAPSHOT'
+    implementation(files("C:\\Dev\\Eclazion\\jars\\PacketWrapper.jar"))
+}
+
+test {
+    useJUnitPlatform()
+}

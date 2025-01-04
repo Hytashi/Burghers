@@ -1,0 +1,8 @@
+name: Burghers
+version: 1.0.0
+author: Hytashi
+main: fr.hytashi.burghers.Main
+depend: [ProtocolLib, DecentHolograms]
+commands:
+  burghers:
+    description: Main command
