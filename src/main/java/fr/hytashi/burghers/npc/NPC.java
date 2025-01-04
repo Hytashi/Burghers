@@ -32,6 +32,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -125,6 +126,7 @@ public class NPC implements Serializable {
     public void show(Player player) {
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
             this.viewers.add(player);
+
             WrapperPlayServerNamedEntitySpawn spawnPacket = new WrapperPlayServerNamedEntitySpawn();
             spawnPacket.setEntityID(this.entityID);
             spawnPacket.setPlayerUUID(this.uuid);
@@ -133,6 +135,7 @@ public class NPC implements Serializable {
             spawnPacket.setZ(this.location.getZ());
             spawnPacket.setYaw((byte) ((int) (this.location.getYaw() * 256.0F / 360.0F)));
             spawnPacket.setPitch(this.location.getPitch());
+
             WrappedGameProfile p = new WrappedGameProfile(this.uuid, this.identifier);
             p.getProperties().put("textures", new WrappedSignedProperty(this.property.getName(), this.property.getValue(), this.property.getSignature()));
             PlayerInfoData data = new PlayerInfoData(p, 10, NativeGameMode.CREATIVE, WrappedChatComponent.fromText(this.identifier));
@@ -142,16 +145,20 @@ public class NPC implements Serializable {
             WrappedDataWatcher.WrappedDataWatcherObject hideWhenFarAway = new WrappedDataWatcher.WrappedDataWatcherObject(3, Registry.get(Boolean.class));
             watcher.setObject(hideWhenFarAway, false);
             spawnPacket.setMetadata(watcher);
+
             WrapperPlayServerPlayerInfo playerInfoPacket = new WrapperPlayServerPlayerInfo();
             playerInfoPacket.setAction(PlayerInfoAction.ADD_PLAYER);
             playerInfoPacket.setData(Collections.singletonList(data));
+
             WrapperPlayServerPlayerInfo hideTabPacket = new WrapperPlayServerPlayerInfo();
             hideTabPacket.setAction(PlayerInfoAction.REMOVE_PLAYER);
             hideTabPacket.setData(Collections.singletonList(data));
+
             WrapperPlayServerEntityHeadRotation rotation = new WrapperPlayServerEntityHeadRotation();
             rotation.setEntityID(this.entityID);
             float yaw = this.location.getYaw() * 256.0F / 360.0F;
             rotation.setHeadYaw((byte) ((int) yaw));
+
             WrapperPlayServerEntityTeleport tp = new WrapperPlayServerEntityTeleport();
             tp.setEntityID(this.entityID);
             tp.setX(this.location.getX());
@@ -159,19 +166,21 @@ public class NPC implements Serializable {
             tp.setZ(this.location.getZ());
             tp.setYaw(this.location.getYaw());
             tp.setPitch(this.location.getPitch());
+
             playerInfoPacket.sendPacket(player);
             spawnPacket.sendPacket(player);
             rotation.sendPacket(player);
             tp.sendPacket(player);
             this.sendPacketsLater(player, 100L, hideTabPacket.getHandle());
+
             ScoreboardTeam team = new ScoreboardTeam(((CraftScoreboard) Bukkit.getScoreboardManager().getMainScoreboard()).getHandle(), p.getName());
             team.setNameTagVisibility(EnumNameTagVisibility.NEVER);
-            ArrayList<String> playerToAdd = new ArrayList<>();
-            playerToAdd.add(this.identifier);
+            List<String> playerToAdd = List.of(this.identifier);
             PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
             connection.sendPacket(new PacketPlayOutScoreboardTeam(team, 1));
             connection.sendPacket(new PacketPlayOutScoreboardTeam(team, 0));
             connection.sendPacket(new PacketPlayOutScoreboardTeam(team, playerToAdd, 3));
+
             if (this.nametagVisible) {
                 this.customNameTag.setShowPlayer(player);
             }
