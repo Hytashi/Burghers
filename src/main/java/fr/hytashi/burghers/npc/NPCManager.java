@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.Iterator;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -15,14 +14,14 @@ import org.bukkit.entity.Player;
 
 public class NPCManager {
 
-    private static final ConcurrentHashMap<UUID, NPC> npcs = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<UUID, NPC> NPCs = new ConcurrentHashMap<>();
 
     public static ConcurrentHashMap<UUID, NPC> getNPCS() {
-        return npcs;
+        return NPCs;
     }
 
     public static void addNPC(NPC npc) {
-        npcs.put(npc.getUUID(), npc);
+        NPCs.put(npc.getUUID(), npc);
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
             try {
                 File file = new File(Main.getInstance().getDataFolder(), "npc/" + npc.getUUID().toString() + ".ser");
@@ -38,20 +37,20 @@ public class NPCManager {
     }
 
     public static void removeNPC(NPC npc) {
-        npcs.remove(npc.getUUID());
+        NPCs.remove(npc.getUUID());
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
             new File(Main.getInstance().getDataFolder(), "npc/" + npc.getUUID().toString() + ".ser").delete();
         });
     }
 
     public static NPC getNPC(UUID uuid) {
-        return npcs.get(uuid);
+        return NPCs.get(uuid);
     }
 
     public static void update() {
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
             for (Player player : Bukkit.getOnlinePlayers()) {
-                npcs.values().forEach(npc -> {
+                NPCs.values().forEach(npc -> {
                     if (npc.getLocation().getWorld().equals(player.getLocation().getWorld())
                             && !npc.getViewers().contains(player)
                             && npc.getLocation().distance(player.getLocation()) <= 100.0) {

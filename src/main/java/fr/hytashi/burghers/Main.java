@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
 import java.util.Objects;
-import java.util.Optional;
 
 public class Main extends JavaPlugin {
 
@@ -34,23 +33,30 @@ public class Main extends JavaPlugin {
         INSTANCE = this;
 
         this.getCommand("burghers").setExecutor(new CommandBurghers());
+
         PROTOCOL_MANAGER = ProtocolLibrary.getProtocolManager();
+
         PROTOCOL_MANAGER.addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, Client.USE_ENTITY) {
+
             public void onPacketReceiving(PacketEvent event) {
                 WrapperPlayClientUseEntity packet = new WrapperPlayClientUseEntity(event.getPacket());
-                if (packet.getTargetID() >= 10000) {
-                    if (System.nanoTime() - Main.LAST_EVENT.getOrDefault(event.getPlayer(), 0L) < 1000000L) {
-                        return;
-                    }
 
-                    Optional<NPC> npc = NPCManager.getNPCS().values().stream().filter((n) -> n.getEntityID() == packet.getTargetID()).findFirst();
-                    if (npc.isPresent()) {
-                        Bukkit.getServer().getPluginManager().callEvent(new NPCInteractEvent((NPC) npc.get(), event.getPlayer()));
-                        Main.LAST_EVENT.put(event.getPlayer(), System.nanoTime());
-                    }
+                if (packet.getTargetID() < 10000) return;
+
+                // Pour éviter d'envoyer l'event plusieurs fois car reçoit parfois le packet en double
+                if (System.nanoTime() - Main.LAST_EVENT.getOrDefault(event.getPlayer(), 0L) < 1_000_000L) {
+                    return;
                 }
 
+                NPCManager.getNPCS().values().stream()
+                        .filter((n) -> n.getEntityID() == packet.getTargetID())
+                        .findFirst()
+                        .ifPresent(npc -> {
+                            Bukkit.getServer().getPluginManager().callEvent(new NPCInteractEvent(npc, event.getPlayer()));
+                            Main.LAST_EVENT.put(event.getPlayer(), System.nanoTime());
+                        });
             }
+
         });
 
         Bukkit.getScheduler().runTaskAsynchronously(getInstance(), () -> {

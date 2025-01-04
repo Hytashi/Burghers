@@ -10,9 +10,6 @@ public class NPCBuilder {
     private Property property;
     private boolean nametagVisible = true;
 
-    public NPCBuilder() {
-    }
-
     public NPCBuilder setDisplayName(String displayName) {
         this.displayName = displayName;
         return this;

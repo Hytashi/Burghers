@@ -1,10 +1,12 @@
 package fr.hytashi.burghers.implementation;
 
 import java.io.*;
+
 import org.bukkit.*;
 
-public class SerializableLocation implements Serializable
-{
+public class SerializableLocation implements Serializable {
+
+    @Serial
     private static final long serialVersionUID = 1L;
     private final String worldName;
     private final double x;
@@ -53,4 +55,5 @@ public class SerializableLocation implements Serializable
     public float getPitch() {
         return this.pitch;
     }
+
 }

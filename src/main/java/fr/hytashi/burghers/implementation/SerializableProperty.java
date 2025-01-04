@@ -1,10 +1,12 @@
 package fr.hytashi.burghers.implementation;
 
 import java.io.*;
+
 import com.mojang.authlib.properties.*;
 
-public class SerializableProperty implements Serializable
-{
+public class SerializableProperty implements Serializable {
+
+    @Serial
     private static final long serialVersionUID = 1L;
     private final String name;
     private final String value;
@@ -37,4 +39,5 @@ public class SerializableProperty implements Serializable
     public String getSignature() {
         return this.signature;
     }
+
 }
