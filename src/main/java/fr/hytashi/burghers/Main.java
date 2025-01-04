@@ -50,7 +50,7 @@ public class Main extends JavaPlugin {
 
                 NPCManager.getNPCS().values().stream()
                         .filter((n) -> n.getEntityID() == packet.getTargetID())
-                        .findFirst()
+                        .findAny()
                         .ifPresent(npc -> {
                             Bukkit.getServer().getPluginManager().callEvent(new NPCInteractEvent(npc, event.getPlayer()));
                             Main.LAST_EVENT.put(event.getPlayer(), System.nanoTime());
