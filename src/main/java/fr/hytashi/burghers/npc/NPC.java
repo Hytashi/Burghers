@@ -42,7 +42,7 @@ public class NPC implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String displayName;
-    private final String identifier = (new UniqueRandomName(12)).nextString();
+    private final String identifier = UniqueRandomName.generate(12);
     private SerializableLocation location;
     private SerializableProperty property;
     private final int entityID = 10000 + NPCManager.getNPCS().size();
